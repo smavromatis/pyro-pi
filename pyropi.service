@@ -1,0 +1,18 @@
+[Unit]
+Description=PyroPi Video Looper
+After=multi-user.target systemd-udev-settle.service
+Wants=systemd-udev-settle.service
+
+[Service]
+Type=simple
+User=TEMPLATE_USER
+# ffmpeg pipe ensures gapless looping for specific formats
+ExecStart=/bin/bash -c "ffmpeg -stream_loop -1 -i TEMPLATE_PATH -c copy -f matroska - | mpv - --profile=fast --hwdec=auto --vo=gpu --fs --no-osd-bar TEMPLATE_AUDIO --video-sync=display-resample --gapless-audio=yes --audio-wait-open=2"
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
